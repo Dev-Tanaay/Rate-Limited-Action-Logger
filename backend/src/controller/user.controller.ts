@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "../../generated/prisma";
 import { hashSync,compareSync } from "bcrypt";
 import { sign } from "jsonwebtoken";
+import { initializeBucket } from "../redis/bucketToken";
 
 const prisma = new PrismaClient();
 
@@ -58,6 +59,7 @@ export const logIn=async(req:Request<{},{},User>,res:Response)=>{
     }
     const token=sign({userId:checkUser.id},String(process.env.JTW_SECRET));
     res.cookie("token", token, { httpOnly: true });
+    await initializeBucket(checkUser.id);
     res.status(200).json({checkUser,token});
 }
 

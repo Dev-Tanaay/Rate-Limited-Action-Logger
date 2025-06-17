@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 
-interface AuthRequest extends Request{
-    user ?: any;
+interface AuthRequest extends Request {
+    user?: { userId: number }; // Adjust based on your JWT payload structure
 }
 
-export const authMiddleware=async(req:Request,res:Response,next:NextFunction)=>{
+export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const token=req.cookies?.token;
-        if(!token){
-            res.status(401).json({"message":"UnAuthorized"});
+        const token = req.cookies?.token;
+        if (!token) {
+            res.status(401).json({ message: "Unauthorized: No token provided" });
             return;
         }
-        const decode=verify(token,String(process.env.JTW_SECRET));
-        req.user=decode;
+        const decode = verify(token, String(process.env.JTW_SECRET)) as {userId:number};
+        req.user = decode;
         next();
     } catch (error) {
-        res.status(401).json({"message":error});
-        return ;
+        console.error("Error in authMiddleware:", error);
+        res.status(401).json({ message: "Unauthorized" });
     }
-}
+};

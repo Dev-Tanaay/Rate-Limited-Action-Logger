@@ -9,7 +9,7 @@ dotenv.config();
 app.use(express.json())
 app.use(cookieParser())
 async function start() {
-    // await connectRedis()
+    await connectRedis()
     app.use("/api/user",route);
     app.use("/api",router);
     app.listen(3000,()=>{
