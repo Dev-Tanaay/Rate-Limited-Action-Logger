@@ -1,16 +1,22 @@
-import { NextFunction, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
+interface AuthRequest extends Request{
+    user ?: any;
 }
 
-export const authMiddleware=async(req:Request,next:NextFunction)=>{
-    const token=req.cookies.token;
-    const verifyToken=verify(token,String(process.env.JTW_SECRET));
-    req.user=verifyToken;
+export const authMiddleware=async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const token=req.cookies?.token;
+        if(!token){
+            res.status(401).json({"message":"UnAuthorized"});
+            return;
+        }
+        const decode=verify(token,String(process.env.JTW_SECRET));
+        req.user=decode;
+        next();
+    } catch (error) {
+        res.status(401).json({"message":error});
+        return ;
+    }
 }
