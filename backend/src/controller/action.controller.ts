@@ -3,6 +3,7 @@ import { PrismaClient } from "../../generated/prisma";
 import { getRedisClient } from "../redis/redis.connect";
 
 const prisma = new PrismaClient();
+const client = getRedisClient();
 
 export const actionMethod = async (req: AuthRequest,res: Response): Promise<void> => {
   try {
@@ -12,7 +13,6 @@ export const actionMethod = async (req: AuthRequest,res: Response): Promise<void
       return;
     }
     const {  type, metaData } = req.body as { type: string; metaData: { file: string } };
-    const client = getRedisClient();
     const result = await prisma.action.create({
       data: {
         userId,
@@ -46,3 +46,26 @@ export const actionMethod = async (req: AuthRequest,res: Response): Promise<void
     res.status(500).json({ message: error.message || "Something went wrong" });
   }
 };
+
+
+export const getLeaderBoard=async(req:AuthRequest,res:Response)=>{
+  const userId=req.user?.userId;
+  const topUserIdsRaw = await client.zRevRange("userLeaderboard", 0, 4);
+  const topUserIds = Array.isArray(topUserIdsRaw) ? topUserIdsRaw : [];
+  if (!Array.isArray(topUserIds) || topUserIds.length === 0) {
+    res.status(500).json({ message: "Could not fetch leaderboard data" });
+    return;
+  }
+  const leaderboard = await Promise.all(
+    topUserIds.map(async (userId, index) => {
+      const score = userId != null ? await client.zScore("userLeaderboard", userId.toString()) : 0;
+      return {
+        rank: index + 1,
+        userId,
+        score: score || 0,
+      };
+    })
+  );
+
+  res.status(200).json({ leaderboard });
+}

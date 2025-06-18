@@ -16,7 +16,7 @@ export const redisMiddleware=async(req:AuthRequest,res:Response,next:NextFunctio
     }
     const ttl=await client.ttl(limitKey);
     if(count>5){
-        res.status(429).json({"message":`To many request try after ${ttl} this much seconds:(`})
+        res.status(429).json({"message":`To many request try after ${ttl} seconds:(`})
         return ;
     }
     
