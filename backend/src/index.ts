@@ -12,7 +12,7 @@ async function start() {
     await connectRedis()
     app.use("/api/user",route);
     app.use("/api",router);
-    app.listen(3000,()=>{
+    app.listen(process.env.PORT,()=>{
         console.log("Server up in running...")
     })
 }
