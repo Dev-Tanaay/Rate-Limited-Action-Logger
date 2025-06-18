@@ -1,10 +1,10 @@
-# 🔥 Rate-Limited Action Logger (Redis + PostgreSQL)
+# Rate-Limited Action Logger (Redis + PostgreSQL)
 
 > A high-performance backend system that demonstrates advanced usage of Redis and PostgreSQL to handle rate-limiting, real-time analytics, concurrency control, and event-driven patterns.
 
 ---
 
-## 📦 Project Overview
+## Project Overview
 
 This app allows users to perform actions through an API endpoint, but with built-in controls using Redis to:
 - Rate limit user actions (Token Bucket + Fixed Window)
@@ -14,7 +14,7 @@ This app allows users to perform actions through an API endpoint, but with built
 
 ---
 
-## 🧠 Real-life Applications
+## Real-life Applications
 
 | Feature                      | Real-World Use Case                                                |
 |-----------------------------|---------------------------------------------------------------------|
@@ -27,7 +27,7 @@ This app allows users to perform actions through an API endpoint, but with built
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - **Node.js + Express**
 - **TypeScript**
@@ -37,7 +37,7 @@ This app allows users to perform actions through an API endpoint, but with built
 
 ---
 
-## 🧪 API Endpoints
+## API Endpoints
 
 ### `POST /signin`
 - Body: 
@@ -77,7 +77,7 @@ This app allows users to perform actions through an API endpoint, but with built
 
 ---
 
-## 🧵 Redis Concepts Covered
+## Redis Concepts Covered
 
 | Concept             | Redis Feature Used           |
 |---------------------|------------------------------|
@@ -90,7 +90,17 @@ This app allows users to perform actions through an API endpoint, but with built
 
 ---
 
-## ✅ How to Run
+## Before running add .env inside backend folder
+DATABASE_URL="Your PostgresDb URL"
+REDIS_URL="Your Redis URL"
+saltRound=9
+JTW_SECRET="YourSecretKey"
+PORT=3000
+
+
+---
+
+## How to Run
 
 ```bash
 #Change Dir to backend
@@ -104,3 +114,17 @@ npm run dev
 
 ```
 
+## How to Run with Docker
+
+```bash
+
+#clone the repo 
+git clone https://github.com/Dev-Tanaay/Rate-Limited-Action-Logger.git
+
+#Change Dir to backend
+cd .\backend\
+
+#docker compose
+docker-compose up --build
+
+```
