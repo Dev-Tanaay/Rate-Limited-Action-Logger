@@ -103,6 +103,10 @@ PORT=3000
 ## How to Run
 
 ```bash
+
+#clone the repo 
+git clone https://github.com/Dev-Tanaay/Rate-Limited-Action-Logger.git
+
 #Change Dir to backend
 cd .\backend\
 
