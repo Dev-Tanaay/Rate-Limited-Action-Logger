@@ -75,10 +75,6 @@ This app allows users to perform actions through an API endpoint, but with built
   - Increments user score in leaderboard
   - Caches last action for 5 minutes
 
-
-### `GET /latest`
-- Shows last action for logged-in user from Redis cache.
-
 ---
 
 ## 🧵 Redis Concepts Covered

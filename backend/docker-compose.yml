@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  backend:
+    build: .
+    container_name: rate-limiter
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/logger
+      - PORT=3000
+      - JTW_SECRET="yoursecretkey"
+      - saltRound=10
+    volumes:
+      - .:/app
+    command: npm run dev
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: logger
+    ports:
+      - '5432:5432'
