@@ -4,31 +4,15 @@ import { getRedisClient } from "../redis/redis.connect";
 
 const prisma = new PrismaClient();
 
-interface Upload {
-  userId: number;
-  type: string;
-  metaData: {
-    file: string;
-  };
-}
-
-export const actionMethod = async (req: Request<{}, {}, Upload>,res: Response): Promise<void> => {
+export const actionMethod = async (req: AuthRequest,res: Response): Promise<void> => {
   try {
-    const { userId, type, metaData } = req.body;
-
-    const client = getRedisClient();
-    const limitKey = `rate-limit:${userId}`;
-    const count = await client.incr(limitKey);
-    if (count === 1) {
-      await client.expire(limitKey, 60);
-    }
-    if (count > 5) {
-      const ttl = await client.ttl(limitKey);
-      res.status(429).json({
-        message: `Too many requests, wait ${ttl} seconds`,
-      });
+    const userId = req.user?.userId;
+    if (typeof userId !== "number") {
+      res.status(400).json({ message: "Invalid or missing userId" });
       return;
     }
+    const {  type, metaData } = req.body as { type: string; metaData: { file: string } };
+    const client = getRedisClient();
     const result = await prisma.action.create({
       data: {
         userId,
@@ -36,6 +20,10 @@ export const actionMethod = async (req: Request<{}, {}, Upload>,res: Response): 
         metaData,
       },
     });
+    const token=req.user?.bucketToken;
+    if(typeof token === "string"){
+      await client.rPush(`user-bucket:${userId}`,token);
+    }
 
     await client.zIncrBy("userLeaderboard", 1, userId.toString());
 
@@ -52,12 +40,7 @@ export const actionMethod = async (req: Request<{}, {}, Upload>,res: Response): 
     const rank = await client.zRevRank("userLeaderboard", userId.toString());
     const score = await client.zScore("userLeaderboard", userId.toString());
 
-    res.status(200).json({
-      message: "Action logged successfully",
-      remaining: 5 - count,
-      rank: rank !== null ? rank + 1 : null,
-      score: score || 0,
-    });
+    res.status(200).json({message: "Action logged successfully","rank":Number(rank)+1,score});
   } catch (error: any) {
     console.error("Error in /action:", error);
     res.status(500).json({ message: error.message || "Something went wrong" });

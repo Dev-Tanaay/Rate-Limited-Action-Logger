@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 
-interface AuthRequest extends Request {
-    user?: { userId: number }; // Adjust based on your JWT payload structure
-}
-
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
         const token = req.cookies?.token;
@@ -18,5 +14,6 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     } catch (error) {
         console.error("Error in authMiddleware:", error);
         res.status(401).json({ message: "Unauthorized" });
+        return ;
     }
 };

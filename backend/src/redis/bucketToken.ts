@@ -11,6 +11,5 @@ export async function initializeBucket(userId:number) {
         }
         await client.rPush(bucketKey, tokens);
         await client.expire(bucketKey, 60);
-        console.log(bucketKey)
     }
 }
