@@ -1,18 +1,16 @@
 # 🔥 Rate-Limited Action Logger (Redis + PostgreSQL)
 
-> A high-performance backend system that demonstrates advanced usage of Redis and PostgreSQL to handle rate-limiting, real-time analytics, concurrency control, and event-driven patterns — all within a 2-3 hour buildable project.
+> A high-performance backend system that demonstrates advanced usage of Redis and PostgreSQL to handle rate-limiting, real-time analytics, concurrency control, and event-driven patterns.
 
 ---
 
 ## 📦 Project Overview
 
-This app allows users to perform certain actions (like "upload", "delete", "download") through an API endpoint, but with built-in controls using Redis to:
-- ✅ Rate limit user actions (Token Bucket + Fixed Window)
-- 🚀 Maintain a real-time leaderboard (Sorted Sets)
-- 🧠 Log audit events (Streams)
-- 📣 Broadcast actions in real-time (Pub/Sub)
-- ⚡ Cache latest action for fast retrieval (Key-Value)
-- 🧩 Persist action data in PostgreSQL
+This app allows users to perform actions through an API endpoint, but with built-in controls using Redis to:
+- Rate limit user actions (Token Bucket + Fixed Window)
+- Broadcast actions in real-time (Pub/Sub)
+- Cache latest action for fast retrieval (Key-Value)
+- Persist action data in PostgreSQL
 
 ---
 
@@ -35,7 +33,7 @@ This app allows users to perform certain actions (like "upload", "delete", "down
 - **TypeScript**
 - **Redis** (for rate limit, streams, pub/sub, caching)
 - **PostgreSQL** with **Prisma ORM**
-- **Optional**: Docker, PM2
+- **Optional**: Docker
 
 ---
 
@@ -99,10 +97,14 @@ This app allows users to perform certain actions (like "upload", "delete", "down
 ## ✅ How to Run
 
 ```bash
-# Start Express app
-ts-node src/index.ts
+#Change Dir to backend
+cd .\backend\
 
-# Run Redis subscriber in parallel
-ts-node src/redis/subscriber.ts
+#install packages 
+npm install
+
+# run Express app
+npm run dev
+
 ```
 
